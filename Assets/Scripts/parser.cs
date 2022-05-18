@@ -8,11 +8,12 @@ namespace VS.Parser
     public class parser : MonoBehaviour
     {
         [SerializeField] private TMPro.TMP_Text m_Text;
+        [SerializeField] private List<CodeCell> m_Cells = new List<CodeCell>();
 
         void Start()
         {
+            m_Cells = GetLineType(m_Text.text);
             m_Text.text = Parse(m_Text.text); 
-            m_Text.ForceMeshUpdate();
         }
 
         public string m_ClassColor = "56B7C3";
@@ -228,7 +229,77 @@ namespace VS.Parser
 
             return "<#" + m_MethodInitilializerColor + ">" + _name + "</color>" + "(" + _parametersText + ")";
         }
+    
+        public List<CodeCell> GetLineType(string _Text)
+        {
+            List<CodeCell> _output = new List<CodeCell>();
+            string[] _textInCells = _Text.Split('\n');
+
+            foreach(string _cell in _textInCells)
+            {
+                string _name = _cell;
+                CellType _type = CellType.Condition;
+                string _cellNoSpace = _cell.Replace(" ","");
+
+                // Condition
+                if (_cellNoSpace.Contains("if("))
+                {
+                    _type = CellType.Condition;
+                }
+                
+                // Variable Declaration
+                if (ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("="))
+                {
+                    _type = CellType.VariableDeclaration;
+                }
+                else if (!ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("=")) // Variable Set
+                {
+                    _type = CellType.VariableSet;
+                }
+
+                _output.Add(new CodeCell(_name, _type));
+            }
+
+            return _output;
+        }
+
+        private bool ContainsArray(string text, string[] _values)
+        {
+            bool _output = false;
+
+            foreach(string _v in _values)
+            {
+                if (text.Contains(_v))
+                    _output = true;
+            }
+
+            return _output;
+        }
     }
+
+    [System.Serializable]
+    public class CodeCell
+    {
+        [SerializeField] private string m_cellName;
+        [SerializeField] private CellType m_cellType;
+
+        public string CellName
+        {
+            get { return m_cellName; }
+        }
+
+        public CellType CellType
+        {
+            get { return m_cellType; }
+        }
+
+        public CodeCell(string _CellName, CellType _CellType)
+        {
+            this.m_cellName = _CellName;
+            this.m_cellType = _CellType;
+        }
+    }
+
     [System.Serializable]
     public class DetectedModule
     {
