@@ -1,7 +1,8 @@
-using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using FeatherLight.Pro;
 
 namespace VS.Parser
 {
@@ -247,29 +248,16 @@ namespace VS.Parser
                 }
                 
                 // Variable Declaration
-                if (ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("="))
+                if (StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("="))
                 {
                     _type = CellType.VariableDeclaration;
                 }
-                else if (!ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("=")) // Variable Set
+                else if (!StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("=")) // Variable Set
                 {
                     _type = CellType.VariableSet;
                 }
 
-                _output.Add(new CodeCell(_name, _type));
-            }
-
-            return _output;
-        }
-
-        private bool ContainsArray(string text, string[] _values)
-        {
-            bool _output = false;
-
-            foreach(string _v in _values)
-            {
-                if (text.Contains(_v))
-                    _output = true;
+                _output.Add(new CodeCell());
             }
 
             return _output;
