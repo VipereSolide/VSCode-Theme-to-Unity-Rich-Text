@@ -33,7 +33,7 @@ namespace VS.Parser
         };
 
         public List<DetectedModule> m_DetectedModules = new List<DetectedModule>();
-        public List<Method> m_Methods = new List<Method>();
+        public List<CodeMethod> m_Methods = new List<CodeMethod>();
 
         private string ColorToHex(Color32 _Color)
         {
@@ -124,12 +124,12 @@ namespace VS.Parser
                     int _methodLength = _methodEndIndex - _methodStartIndex;
                     string _syntax = _Text.Substring(_methodStartIndex, _methodLength);
                 
-                    m_Methods.Add(new Method(_syntax));
+                    m_Methods.Add(new CodeMethod(_syntax));
                     _openMethod = false;
                 }
             }
 
-            foreach(Method _method in m_Methods)
+            foreach(CodeMethod _method in m_Methods)
             {
                 _output = _output.Replace(_method.MethodSyntax, ParseMethod(_method));
             }
@@ -194,9 +194,8 @@ namespace VS.Parser
             return _output;
         }
 
-        private string ParseMethod(Method _Method)
+        private string ParseMethod(CodeMethod _Method)
         {
-            string _output = "";
             string _name = _Method.MethodSyntax.Split('(')[0];
             string _parametersText = _Method.MethodSyntax.Split('(')[1].Split(')')[0];
 
@@ -275,144 +274,5 @@ namespace VS.Parser
 
             return _output;
         }
-    }
-
-    [System.Serializable]
-    public class CodeCell
-    {
-        [SerializeField] private string m_cellName;
-        [SerializeField] private CellType m_cellType;
-
-        public string CellName
-        {
-            get { return m_cellName; }
-        }
-
-        public CellType CellType
-        {
-            get { return m_cellType; }
-        }
-
-        public CodeCell(string _CellName, CellType _CellType)
-        {
-            this.m_cellName = _CellName;
-            this.m_cellType = _CellType;
-        }
-    }
-
-    [System.Serializable]
-    public class DetectedModule
-    {
-        [SerializeField] private string m_Syntax = string.Empty;
-        [SerializeField] private string m_Color = string.Empty;
-
-        public string Syntax
-        {
-            get
-            {
-                return m_Syntax;
-            }
-        }
-
-        public string ColorInHex
-        {
-            get
-            {
-                    return m_Color;
-            }
-        }
-
-        public Color32 Color
-        {
-            get
-            {
-                int _bigint = int.Parse(ColorInHex, System.Globalization.NumberStyles.HexNumber);
-                var _r = (_bigint >> 16) & 255;
-                var _g = (_bigint >> 8) & 255;
-                var _b = _bigint & 255;
-
-                Color32 _col = new Color32((byte)_r,(byte)_g,(byte)_b,255);
-                return _col;
-            }
-        }
-
-        public DetectedModule(string _syntax, string _color)
-        {
-            this.m_Color = _color;
-            this.m_Syntax = _syntax;
-        }
-    }
-
-    [System.Serializable]
-    public class HighlightModule
-    {
-        [SerializeField] private string[] m_ModuleNames;
-        [SerializeField] private string m_ColorInHex;
-
-        public string[] ModuleNames
-        {
-            get
-            {
-                return m_ModuleNames;
-            }
-        }
-
-        public string ColorInHex
-        {
-            get
-            {
-                return m_ColorInHex;
-            }
-        }
-
-        public Color32 Color
-        {
-            get
-            {
-                int _bigint = int.Parse(ColorInHex, System.Globalization.NumberStyles.HexNumber);
-                var _r = (_bigint >> 16) & 255;
-                var _g = (_bigint >> 8) & 255;
-                var _b = _bigint & 255;
-
-                Color32 _col = new Color32((byte)_r,(byte)_g,(byte)_b,255);
-                return _col;
-            }
-        }
-
-        public HighlightModule(string[] _Name, string _ColorInHex)
-        {
-            this.m_ModuleNames = _Name;
-            this.m_ColorInHex = _ColorInHex;
-        }
-    }
-
-    [System.Serializable]
-    public class Method
-    {
-        [SerializeField] private string m_MethodSyntax = "";
-
-        public string MethodSyntax
-        {
-            get
-            {
-                return m_MethodSyntax;
-            }
-        }
-
-        public Method(string _syntax)
-        {
-            this.m_MethodSyntax = _syntax;
-        }
-    }
-
-    public enum CellType
-    {
-        VariableDeclaration,
-        MethodDeclaration,
-        VariableSet,
-        MethodCall,
-        DataHandler,
-        Condition,
-        Loop
-    }
+    }    
 }
