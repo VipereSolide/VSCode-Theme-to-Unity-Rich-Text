@@ -20,13 +20,15 @@ namespace VS.Parser
     [Serializable]
     public class VariableDeclarationCell : CodeCell
     {
-        protected VariablePrivacy m_variablePrivacy = VariablePrivacy.Private;
-        protected DefaultDataClasses m_variableType = DefaultDataClasses.Object;
-        protected string m_variableName = string.Empty;
-        protected string m_variableValue = string.Empty;
+        [Header("Values")]
+        [SerializeField] protected VariablePrivacy m_variablePrivacy = VariablePrivacy.Private;
+        [SerializeField] protected DefaultDataClasses m_variableType = DefaultDataClasses.Object;
+        [SerializeField] protected string m_variableName = string.Empty;
+        [SerializeField] protected string m_variableValue = string.Empty;
         
-        protected bool m_publicGetter = true;
-        protected bool m_publicSetter = true;
+        [Space()]
+        [SerializeField] protected bool m_publicGetter = true;
+        [SerializeField] protected bool m_publicSetter = true;
 
         public VariablePrivacy VariablePrivacy
         {
@@ -85,6 +87,8 @@ namespace VS.Parser
             this.m_variableType = _VariableType;
             this.m_variableValue = _VariableValue;
         }
+
+        public VariableDeclarationCell() {}
 
         public VariableDeclarationCell InterpretLine(string _Line)
         {

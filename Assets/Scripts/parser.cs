@@ -251,13 +251,16 @@ namespace VS.Parser
                 if (StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("="))
                 {
                     _type = CellType.VariableDeclaration;
+                    VariableDeclarationCell _outputCell = new VariableDeclarationCell();
+                    _outputCell.InterpretLine(_cell);
+                    
+                    _output.Add(_outputCell);
                 }
                 else if (!StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("=")) // Variable Set
                 {
                     _type = CellType.VariableSet;
                 }
 
-                _output.Add(new CodeCell());
             }
 
             return _output;
