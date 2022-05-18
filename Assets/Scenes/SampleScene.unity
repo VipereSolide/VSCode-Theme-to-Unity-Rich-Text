@@ -746,8 +746,8 @@ MonoBehaviour:
     public partial class TextMeshProUGUI : TMP_Text, ILayoutElement\r\n    {\r\n       
     /// <summary>\r\n        /// Get the material that will be used for rendering.\r\n       
     /// </summary>\r\n        public override Material materialForRendering\r\n       
-    {\r\n            get { return TMP_MaterialManager.GetMaterialForRendering(this,
-    m_sharedMaterial); }\r\n        }\r\n\r\n\r\n        /// <summary>\r\n       
+    {\r\n            get\n            {\n                return TMP_MaterialManager.GetMaterialForRendering(this,
+    m_sharedMaterial);\n            }\r\n        }\r\n\r\n\r\n        /// <summary>\r\n       
     /// Determines if the size of the text container will be adjusted to fit the
     text object when it is first created.\r\n        /// </summary>\r\n        public
     override bool autoSizeTextContainer\r\n        {\r\n            get { return
@@ -1137,10 +1137,11 @@ MonoBehaviour:
     - public
     - private
     - protected
-    - overwrite
+    - override
     - virtual
     - partial
     - '#pragma'
+    - get
     m_ColorInHex: C57BDB
   - m_ModuleNames:
     - using
@@ -1148,6 +1149,7 @@ MonoBehaviour:
     - for
     - while
     - await
+    - return
     m_ColorInHex: CF68E1
   - m_ModuleNames:
     - SerializeField
@@ -2350,8 +2352,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2129796187}
   m_HandleRect: {fileID: 2129796186}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.03382026
+  m_Value: 0.9928715
+  m_Size: 0.033687163
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2607,7 +2609,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 249.51}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &842195381
