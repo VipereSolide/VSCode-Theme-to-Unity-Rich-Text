@@ -8,7 +8,6 @@ namespace VS.Parser
         Public,
         Virtual,
         Private,
-        Override,
         Protected
     }
 }

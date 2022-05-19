@@ -9,7 +9,7 @@ namespace VS.Parser
     public class parser : MonoBehaviour
     {
         [SerializeField] private TMPro.TMP_Text m_Text;
-        [SerializeField] private List<CodeCell> m_Cells = new List<CodeCell>();
+        [SerializeReference] private List<CodeCell> m_Cells = new List<CodeCell>();
 
         void Start()
         {
@@ -23,6 +23,13 @@ namespace VS.Parser
         public string m_CommentColor = "676E95";
         public string m_MethodInitilializerColor = "6495EE";
         public string m_MethodParameterColor = "E4BF7F";
+        public string m_VariableColor = "B0B7C3";
+        public string m_VariableValueBoolColor = "56B7C3";
+        public string m_VariableValueDoubleColor = "56B7C3";
+        public string m_VariableValueFloatColor = "56B7C3";
+        public string m_VariableValueIntColor = "56B7C3";
+        public string m_VariableValueStringColor = "56B7C3";
+        public string m_VariableValueLongColor = "56B7C3";
     
         public string[] m_CurlyBracketsColors = {"E4BF7F","CF68E1","6495EE"};
         public List<HighlightModule> m_Modules = new List<HighlightModule>()
@@ -192,6 +199,40 @@ namespace VS.Parser
                 _output = _output.Replace(_detected.Syntax, "<#" + _detected.ColorInHex + ">" + _detected.Syntax + "</color>");
             }
 
+            foreach(CodeCell _cell in m_Cells)
+            {
+                if (!(_cell is VariableDeclarationCell))
+                    continue;
+
+                string _selectedColor = m_VariableColor;
+                VariableDeclarationCell _variableCell = _cell as VariableDeclarationCell;
+
+                if (_variableCell.VariableType == DefaultDataClasses.Bool)
+                    _selectedColor = m_VariableValueBoolColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Double)
+                    _selectedColor = m_VariableValueDoubleColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Float)
+                    _selectedColor = m_VariableValueFloatColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Int)
+                    _selectedColor = m_VariableValueIntColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Long)
+                    _selectedColor = m_VariableValueLongColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Object)
+                    _selectedColor = m_VariableColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.String)
+                    _selectedColor = m_VariableValueStringColor;
+                else if (_variableCell.VariableType == DefaultDataClasses.Void)
+                    _selectedColor = m_VariableColor;
+
+                if (_variableCell.VariableValue == null) // If there is no value after the name =
+                    _output = _output.Replace(_variableCell.VariableName + ";", "<#" + m_VariableColor + ">" + _variableCell.VariableName + "</color>" + ";");
+                else // If there is a value after the name =
+                    _output = _output.Replace(_variableCell.VariableName + " = ", "<#" + m_VariableColor + ">" + _variableCell.VariableName + "</color>" + " = ");
+
+                // The value after the name =
+                _output = _output.Replace(_variableCell.VariableValue + ";", "<#" + _selectedColor + ">" + _variableCell.VariableValue + "</color>" + ";");
+            }
+
             return _output;
         }
 
@@ -248,11 +289,19 @@ namespace VS.Parser
                 }
                 
                 // Variable Declaration
-                if (StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames) && _cell.Contains("="))
+                if (StringHelper.ContainsArray(_cell, m_Modules[0].ModuleNames))
                 {
+                    string _cellValue = _cell;
+
+                    foreach(string _moduleName in m_Modules[3].ModuleNames)
+                    {
+                        _cellValue = _cellValue.Replace("[" + _moduleName + "]", "");
+                    }
+
                     _type = CellType.VariableDeclaration;
                     VariableDeclarationCell _outputCell = new VariableDeclarationCell();
-                    _outputCell.InterpretLine(_cell);
+                    _outputCell.InterpretLine(_cellValue);
+
                     
                     _output.Add(_outputCell);
                 }
